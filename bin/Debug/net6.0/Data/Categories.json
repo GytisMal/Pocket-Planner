@@ -1,0 +1,7 @@
+[
+  {
+    "Id": "1",
+    "Name": "Food",
+    "Pattern": "\\b(maxima|lidl|rimi|silas|iki|kebabai|kubas|norfa|norvilo|street|elija|valgykla|todze|hesburger|express|keturi simtai|aces|baras|kavine|alkava|jack pub|wolt|cafe|voster|laurus|studio|sushi|BOTTLERY|Talutti|COFFEE|OBUOLIO|Miltuoti|MENY|EXTRA|chicken|peppes|esso as|fruktmarked|YX|europris|burger|esso|coop|market|maxi|prix|kiwi|pizza|coop|7ELEVEN|ALLE|pietus)\\b"
+  }
+]
