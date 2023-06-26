@@ -1,0 +1,31 @@
+{
+  "name": "pocketplanner",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "vite preview",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mdi/font": "5.9.55",
+    "@syncfusion/ej2-vue-treemap": "^21.2.3",
+    "axios": "^1.4.0",
+    "chartjs-chart-treemap": "^2.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "roboto-fontface": "*",
+    "vue": "^3.3.2",
+    "vue-axios": "^3.5.2",
+    "vue-router": "^4.2.0",
+    "vuetify": "^3.0.0-beta.0",
+    "webfontloader": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vite": "^4.3.5",
+    "vite-plugin-vuetify": "^1.0.0-alpha.12",
+    "vue-cli-plugin-vuetify": "~2.5.8"
+  }
+}
