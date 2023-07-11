@@ -75,7 +75,6 @@
 <script>
 import { mapState } from 'vuex';
 import { mapActions } from 'vuex';
-import axios from 'axios';
 import AddBudgetDialog from './AddBudgetDialog.vue';
 import UpdateBudgetDialog from './UpdateBudgetDialog.vue';
   
@@ -94,7 +93,7 @@ export default {
     },
     methods: {
       userBudget() {
-        axios.get('https://localhost:7042/api/Budget').then((response) => {
+        this.$axios.get('Budget').then((response) => {
             if (response.data) {
                 this.budgets = response.data.data;
             }
@@ -107,7 +106,7 @@ export default {
         this.budgets.push(newBudget);
       },
       deleteBudget(id) {
-          axios.delete(`https://localhost:7042/api/Budget/${id}`).then(response => {
+          this.$axios.delete(`Budget/${id}`).then(response => {
             if (response.data) {
               this.budgets = response.data.data;
             }

@@ -43,7 +43,7 @@ export default {
             this.dialog = true;
         },
         updateCategory() {
-            axios.put(`https://localhost:7042/api/Categories/${this.category.id}`, this.category).then(response => {
+            this.$axios.put(`Categories/${this.category.id}`, this.category).then(response => {
                 if(response.data) {
                     this.$emit('updateCategory', response.data.data);
                 }

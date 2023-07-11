@@ -67,8 +67,8 @@ namespace PocketPlanner.Services.TransactionService
                         }
                     }
                 }
-                // await _context.Transactions.AddRangeAsync(_transactions); //databasse
-                // await _context.SaveChangesAsync();
+                await _context.Transactions.AddRangeAsync(_transactions); //databasse
+                await _context.SaveChangesAsync();
 
                 serviceResponse.Data = _transactions;
                 serviceResponse.Message = "Transactions processed successfully.";

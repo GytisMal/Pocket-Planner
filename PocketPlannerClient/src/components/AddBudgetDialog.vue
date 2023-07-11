@@ -44,8 +44,6 @@
   </template>
 
 <script>
-import axios from "axios";
-
 export default {
     name: 'AddBudgetDialog',
     data() {
@@ -60,7 +58,7 @@ export default {
     },
     methods: {
       addBudget() {
-        axios.post("https://localhost:7042/api/Budget", this.newBudget).then(response => {
+        this.$axios.post("Budget", this.newBudget).then(response => {
           if(response.data) {
             this.$emit("addNewBudget", response.data.data);
             this.newBudget = {

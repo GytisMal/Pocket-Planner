@@ -46,7 +46,7 @@ export default {
             this.dialog = true;
         },
         updateBudget() {
-            axios.put(`https://localhost:7042/api/Budget/${this.budget.id}`, this.budget).then(response => {
+            this.$axios.put(`Budget/${this.budget.id}`, this.budget).then(response => {
                 if(response.data) {
                     this.$emit('updateBudget', response.data.data);
                 }

@@ -78,7 +78,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import axios from 'axios'; 
 
 export default {
   name: 'Transactions',
@@ -101,20 +100,21 @@ export default {
         reader.readAsBinaryString(this.selectedFile);
 
         reader.onload = async () => {
-          try {
-            const base64String = this.binaryToBase64(reader.result);
-            const response = await axios.post(
-              'https://localhost:7042/api/Transactions',
-              { Base64Data: base64String },
-              { headers: { 'Content-Type': 'application/json' } }
-            );
-            this.$store.commit('setTransactions', response.data)
-            this.transactions = response.data;
-          } catch (error) {
+          const base64String = this.binaryToBase64(reader.result);
+          this.$axios.post('Transactions',
+            { Base64Data: base64String },
+            { headers: { 'Content-Type': 'application/json' } }
+          ).then((response) => {
+            if (response.data) {
+              this.$store.commit('setTransactions', response.data)
+              this.transactions = response.data;
+            }
+          })
+          .catch((error) => {
             this.errorMessage = 'File upload failed. Please try again.';
             console.error(error);
-          }
-        };
+          });
+        }
       } else {
         this.errorMessage = 'Please select a file to upload.';
       }

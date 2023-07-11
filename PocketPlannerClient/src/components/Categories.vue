@@ -82,7 +82,6 @@
 </style>
 
 <script>
-import axios from "axios";
 import UpdateCategoriesDialog from "./UpdateCategoriesDialog.vue";
 
 export default {
@@ -111,7 +110,7 @@ export default {
       }
     },
     loadCategories() {
-      axios.get("https://localhost:7042/api/Categories")
+      this.$axios.get("Categories")
         .then(response => {
           if (response.data) {
             this.categories = response.data.data;
@@ -125,7 +124,7 @@ export default {
       if(!this.newCategory.name || !this.newCategory.pattern) {     
         return
       }
-      axios.post("https://localhost:7042/api/Categories", this.newCategory).then(response => {
+      this.$axios.post("Categories", this.newCategory).then(response => {
         if (response.data) {
           this.categories.push(response.data.data);
           this.newCategory = {
@@ -140,7 +139,7 @@ export default {
       });
   },  
     deleteCategory(id) {
-    axios.delete(`https://localhost:7042/api/Categories/${id}`)
+    this.$axios.delete(`Categories/${id}`)
       .then(response => {
         if (response.data) {
           this.categories = response.data;
