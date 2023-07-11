@@ -12,7 +12,9 @@ namespace PocketPlanner
 
             CreateMap<ServiceResponse<List<GetCategoryDto>>, ServiceResponse<List<Category>>>();
 
-            CreateMap<Budget, GetBudgetDto>();
+            CreateMap<Budget, GetBudgetDto>()
+                .ForMember(change => change.Date,
+                    changeTo => changeTo.MapFrom(src => src.Date.ToString("yyyy-MM-dd")));
             CreateMap<AddBudgetDto, Budget>();
 
             CreateMap<Transaction, GetTransactionDto>();

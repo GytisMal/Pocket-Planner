@@ -7,8 +7,11 @@ namespace PocketPlanner.Services.BudgetService
     {
         Task<ServiceResponse<List<GetBudgetDto>>> GetAllBudget();
         Task<ServiceResponse<GetBudgetDto>> GetBudgetById(int id);
-        Task<ServiceResponse<List<GetBudgetDto>>> AddBudget(AddBudgetDto newBudget);
+        Task<ServiceResponse<GetBudgetDto>> AddBudget(AddBudgetDto newBudget);
         Task<ServiceResponse<GetBudgetDto>> UpdateBudget(UpdateBudgetDto updatedBudget);
         Task<ServiceResponse<List<GetBudgetDto>>> DeleteBudget(int id);
+
+        Task<Dictionary<string, double>> GetBudgetTotalsByCategory();
+        Task<Dictionary<string, double>> GetBudgetBalance();
     }
 }

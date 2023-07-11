@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PocketPlanner;
 using PocketPlanner.Data;
+using PocketPlanner.Services.CategoriesService;
 using PocketPlanner.Models;
+using PocketPlanner.Services;
+using PocketPlanner.Services.TransactionService;
 
 namespace PocketPlanner.Controllers
 {
@@ -22,12 +23,10 @@ namespace PocketPlanner.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly ICategoriesService _categoriesService;
 
         public CategoriesController(DataContext context, ICategoriesService categoriesService)
         {
-            _context = context;
             _categoriesService = categoriesService;
         }
 

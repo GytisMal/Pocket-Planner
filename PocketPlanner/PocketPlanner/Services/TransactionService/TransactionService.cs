@@ -2,6 +2,13 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
+<<<<<<< HEAD
+=======
+using PocketPlanner.Services.CategoriesService;
+using System.Text.Json;
+using PocketPlanner.Services.TransactionService;
+using PocketPlanner;
+>>>>>>> origin/AddsNewTransactionsTable
 
 namespace PocketPlanner.Services.TransactionService
 {
@@ -42,10 +49,9 @@ namespace PocketPlanner.Services.TransactionService
                         }
                     }
                 }
-                ServiceResponse<List<GetCategoryDto>> categoriesResponse = await _categoriesService.GetAllCategories(); //works
-                if (categoriesResponse != null && categoriesResponse.Data != null) // works, shows categories
+                ServiceResponse<List<GetCategoryDto>> categoriesResponse = await _categoriesService.GetAllCategories();
+                if (categoriesResponse != null && categoriesResponse.Data != null)
                 {
-                    //List<Category> categories = _mapper.Map<List<Category>>(categoriesResponse.Data);// do not work - 'Missing type map configuration or unsupported mapping.'
                     List<GetCategoryDto> categories = categoriesResponse.Data;
                     foreach (Transaction transaction in _transactions)
                     {
@@ -67,8 +73,6 @@ namespace PocketPlanner.Services.TransactionService
                         }
                     }
                 }
-                // await _context.Transactions.AddRangeAsync(_transactions); //databasse
-                // await _context.SaveChangesAsync();
 
                 serviceResponse.Data = _transactions;
                 serviceResponse.Message = "Transactions processed successfully.";
@@ -81,26 +85,6 @@ namespace PocketPlanner.Services.TransactionService
             }
             return serviceResponse;
         }
-
-        //public async Task<ServiceResponse<List<GetTransactionDto>>> GetAllTransactions()
-        //{
-        //    var serviceResponse = new ServiceResponse<List<GetTransactionDto>>();
-        //    try
-        //    {
-        //        // Map the list of transactions to GetTransactionDto
-        //        var transactionDtos = _mapper.Map<List<GetTransactionDto>>(_transactions);
-
-        //        serviceResponse.Data = transactionDtos;
-        //        serviceResponse.Message = "Transactions retrieved successfully.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse.Success = false;
-        //        serviceResponse.Message = "Error retrieving transactions.";
-        //        serviceResponse.Error = ex.ToString();
-        //    }
-        //    return serviceResponse;
-        //}
 
         public void CategorizeTransactions(List<Transaction> transactions, List<Category> categories)
         {
