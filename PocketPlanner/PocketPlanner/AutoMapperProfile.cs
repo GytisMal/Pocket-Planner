@@ -1,5 +1,4 @@
 ﻿using PocketPlanner.Models;
-using PocketPlanner.Models;
 
 namespace PocketPlanner
 {

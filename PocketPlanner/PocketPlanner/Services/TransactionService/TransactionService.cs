@@ -1,22 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using PocketPlanner.Data;
-using PocketPlanner.Dtos.Transactions;
-using PocketPlanner.Models;
-using System;
-using System.Collections.Generic;
+﻿using PocketPlanner.Models;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 using System.Text.RegularExpressions;
 using System.Text;
-using PocketPlanner.Services.CategoriesService;
-using System.Text.Json;
-using PocketPlanner.Services.TransactionService;
 
 namespace PocketPlanner.Services.TransactionService
 {
@@ -188,4 +173,3 @@ namespace PocketPlanner.Services.TransactionService
         }
     }
 }
-
