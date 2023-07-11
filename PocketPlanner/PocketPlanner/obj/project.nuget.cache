@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SHRy5L9JWbQrWfIprq7nPR5mQPeevE9CendZeilNWOaObBbwyNx3PkXqAmORkUKS9wmFfJPdXz2/caQFMnlsUQ==",
+  "dgSpecHash": "J3uJAClAMjXHtehnue+y45UowU9tX6nDmKrcNOBe2Iys9WXykQRsxfLE3xOzUceO54ZpcImrcIhgmWiNZj2eog==",
   "success": true,
-  "projectFilePath": "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
+  "projectFilePath": "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\GytisMalinauskas\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\GytisMalinauskas\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

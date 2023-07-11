@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PocketPlanner;
 using PocketPlanner.Data;
@@ -25,12 +24,10 @@ namespace PocketPlanner.Controllers
     [ApiController]
     public class BudgetController : ControllerBase
     {
-        private readonly DataContext _dataContext;
         private readonly IBudgetService _budgetService;
 
-        public BudgetController(DataContext context, IBudgetService budgetService)
+        public BudgetController(IBudgetService budgetService)
         {
-            _dataContext = context;
             _budgetService = budgetService;
         }
 
@@ -68,6 +65,27 @@ namespace PocketPlanner.Controllers
         {
             var response = await _budgetService.DeleteBudget(id);
             if (response.Data is null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("spent")]
+        public async Task<ActionResult<Dictionary<string, double>>> GetBudgetTotalsByCategory()
+        {
+            var response = await _budgetService.GetBudgetTotalsByCategory();
+            if (response is null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
+        [HttpGet("balance")]
+        public async Task<ActionResult<Dictionary<string, double>>> GetBudgetBalance()
+        {
+            var response = await _budgetService.GetBudgetBalance();
+            if (response is null)
             {
                 return NotFound(response);
             }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj": {}
+    "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj": {
+    "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
+        "projectUniqueName": "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
         "projectName": "PocketPlanner",
-        "projectPath": "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
+        "projectPath": "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\PocketPlanner.csproj",
         "packagesPath": "C:\\Users\\GytisMalinauskas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\GytisMalinauskas\\source\\repos\\PocketPlanner\\PocketPlanner\\PocketPlanner\\obj\\",
+        "outputPath": "C:\\Repos\\Pocket-Planner\\PocketPlanner\\PocketPlanner\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
