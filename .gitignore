@@ -39,3 +39,6 @@ packages/
 /PocketPlanner/PocketPlanner/obj/PocketPlanner.csproj.nuget.g.props
 /PocketPlanner/PocketPlanner/obj/project.assets.json
 /PocketPlanner/PocketPlanner/obj/project.nuget.cache
+/PocketPlanner/PocketPlanner/.vs/PocketPlanner/v17/.futdcache.v2
+/PocketPlanner/PocketPlanner/.vs/PocketPlanner/v17/.suo
+/PocketPlanner/PocketPlanner/obj/Debug/net6.0/PocketPlanner.GeneratedMSBuildEditorConfig.editorconfig
