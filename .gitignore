@@ -32,3 +32,10 @@ packages/
 **/.vs/
 **/obj/Debug/
 **/obj/
+/PocketPlanner/PocketPlanner/obj/Debug/net6.0/apphost.exe
+/PocketPlanner/PocketPlanner/obj/Debug/net6.0/PocketPlanner.assets.cache
+/PocketPlanner/PocketPlanner/obj/Debug/net6.0/PocketPlanner.GeneratedMSBuildEditorConfig.editorconfig
+/PocketPlanner/PocketPlanner/obj/PocketPlanner.csproj.nuget.dgspec.json
+/PocketPlanner/PocketPlanner/obj/PocketPlanner.csproj.nuget.g.props
+/PocketPlanner/PocketPlanner/obj/project.assets.json
+/PocketPlanner/PocketPlanner/obj/project.nuget.cache
