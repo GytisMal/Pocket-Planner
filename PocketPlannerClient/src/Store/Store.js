@@ -18,10 +18,9 @@ export default createStore({
     setBudgetBalanceData(state, budgetBalanceData) {
       state.budgetBalanceData = budgetBalanceData;
     },
-    setTransactions(state, data) {
-      state.transactions = data;
-      state.transactionsLoaded = true;
-    },
+    setTransactions(state, transactions) {
+      state.transactions = transactions;
+    }
   },
   actions: {
     fetchBudgetSpentData({ commit }) { //state
@@ -40,9 +39,16 @@ export default createStore({
           commit('setBudgetBalanceData', response.data);
         }
       })
-    },
-    addTransaction({ commit }, transaction) {
-      commit('setTransactions', [...state.transactions, transaction]);
-    },
+    }, //TODO DELETE
+    fetchTransactions({ commit }) {
+      axios.post('https://localhost:7042/api/Transactions').then(response => {
+        if(response.data) {
+          commit("setTransactions", response.data);
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    }
   },
 });

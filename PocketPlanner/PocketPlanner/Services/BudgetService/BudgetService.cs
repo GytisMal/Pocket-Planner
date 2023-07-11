@@ -1,5 +1,4 @@
 ﻿global using AutoMapper;
-using PocketPlanner.Models;
 using PocketPlanner.Dtos.Budget;
 using PocketPlanner.Models;
 
@@ -7,25 +6,35 @@ namespace PocketPlanner.Services.BudgetService
 {
     public class BudgetService : IBudgetService
     {
-        private static List<Budget> budgets = new List<Budget>();
+        private static List<Budget> budgets = new List<Budget>
+        {
+            new Budget(),
+            new Budget { Id = 1, Type = "Food", Amount = 400, Date = DateTime.Parse("2023-05-01") },
+        };
+
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly ITransactionService _transactionService;
 
-        public BudgetService(IMapper mapper, DataContext context)
+        public BudgetService(IMapper mapper, DataContext context, ITransactionService transactionService)
         {
             _mapper = mapper;
             _context = context;
+            _transactionService = transactionService;
         }
 
-        public async Task<ServiceResponse<GetBudgetDto>> AddBudget(AddBudgetDto newBudget)
+        public async Task<ServiceResponse<List<GetBudgetDto>>> AddBudget(AddBudgetDto newBudget)
         {
-            var serviceResponse = new ServiceResponse<GetBudgetDto>();
+            var serviceResponse = new ServiceResponse<List<GetBudgetDto>>();
             var budget = _mapper.Map<Budget>(newBudget);
+
+            var dbBudgets = await _context.Budget.ToListAsync();
 
             _context.Budget.Add(budget);
             await _context.SaveChangesAsync();
 
-            serviceResponse.Data = _mapper.Map<GetBudgetDto>(budget);
+            var dbBudget = await _context.Budget.ToListAsync();
+            serviceResponse.Data = dbBudget.Select(budget => _mapper.Map<GetBudgetDto>(budget)).ToList();
 
             return serviceResponse;
         }
@@ -36,7 +45,6 @@ namespace PocketPlanner.Services.BudgetService
             serviceResponse.Data = dbBudget.Select(budget => _mapper.Map<GetBudgetDto>(budget)).ToList();
             return serviceResponse;
         }
-
         public async Task<ServiceResponse<GetBudgetDto>> GetBudgetById(int id)
         {
             var serviceResponse = new ServiceResponse<GetBudgetDto>();
@@ -80,20 +88,20 @@ namespace PocketPlanner.Services.BudgetService
                 _context.Budget.Remove(budget);
                 await _context.SaveChangesAsync();
 
-                var remainingBudgets = await _context.Budget.ToListAsync();
+                var remainingBudget = await _context.Budget.ToListAsync();
 
-                if (remainingBudgets.Count == 0)
+                if (remainingBudget.Count == 0)
                 {
                     // Reset the identity seed to 1
-                    await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('Budgets', RESEED, 0)");
+                    await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('Budget', RESEED, 0)");
                 }
-                else if (remainingBudgets.Count != 0)
+                else if (remainingBudget.Count != 0)
                 {
                     // Get the maximum existing ID
-                    var maxId = remainingBudgets.Max(b => b.Id);
+                    var maxId = remainingBudget.Max(b => b.Id);
 
                     // Reset the identity seed to the maximum ID
-                    await _context.Database.ExecuteSqlRawAsync($"DBCC CHECKIDENT ('Budgets', RESEED, {maxId})");
+                    await _context.Database.ExecuteSqlRawAsync($"DBCC CHECKIDENT ('Budget', RESEED, {maxId})");
                 }
 
                 var dbBudget = await _context.Budget.ToListAsync();
@@ -105,46 +113,6 @@ namespace PocketPlanner.Services.BudgetService
                 serviceResponse.Message = ex.Message;
             }
             return serviceResponse;
-        }
-
-        public async Task<Dictionary<string, double>> GetBudgetTotalsByCategory()
-        {
-            var totalsByCategory = await _context.Transactions
-                .Where(transaction => !string.IsNullOrEmpty(transaction.Category))
-                .GroupBy(transaction => transaction.Category)
-                .Select(group => new
-                {
-                    Category = group.Key,
-                    Amount = Math.Round(group.Sum(transaction => transaction.Amount), 2)
-                })
-                .ToDictionaryAsync(transaction => transaction.Category, transaction => transaction.Amount);
-
-            return totalsByCategory;
-        }
-
-        public async Task<Dictionary<string, double>> GetBudgetBalance()
-        {
-            var budgetTotalsByCategory = await GetBudgetTotalsByCategory();
-            var budgetBalance = new Dictionary<string, double>();
-
-            var budgets = await _context.Budget.ToListAsync();
-
-            foreach (Budget budget in budgets)
-            {
-                var category = budget.Type;
-                var budgetAmount = budget.Amount;
-                var spentAmount = budgetTotalsByCategory.ContainsKey(category) ? budgetTotalsByCategory[category] : 0;
-                var balance = budgetAmount - spentAmount;
-
-                budgetBalance.Add(category, balance);
-            }
-
-            foreach (var roundingNumbers in budgetBalance)
-            {
-                budgetBalance[roundingNumbers.Key] = Math.Round(roundingNumbers.Value, 2);
-            }
-
-            return budgetBalance;
         }
     }
 }

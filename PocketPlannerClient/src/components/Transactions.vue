@@ -1,89 +1,62 @@
 <template>
-  <v-container>
-    <h2>Transactions</h2>
-    <div>
-      <input type="file" @change="handleFileUpload" />
+  <div>
+    <h1>Transactions</h1>
+    <input type="file" @change="handleFileUpload" />
       <p v-if="errorMessage">{{ errorMessage }}</p>
       <button @click="uploadFile">Upload</button>
-    </div>
-    <div class="table-container">
-      <v-table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>IBAN</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>IsCredit</th>
-            <th>Payee</th>
-            <th>PayeeIBAN</th>
-            <th>Description</th>
-            <th>InternalDescription</th>
-            <th>AccountCurrency</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="transaction in transactions" :key="transaction.id">
-            <td>{{ transaction.id }}</td>
-            <td>{{ transaction.iban }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.amount }}</td>
-            <td>{{ transaction.isCredit }}</td>
-            <td>{{ transaction.payee }}</td>
-            <td>{{ transaction.payeeIBAN }}</td>
-            <td>{{ transaction.description }}</td>
-            <td>{{ transaction.internalDescription }}</td>
-            <td>{{ transaction.accountCurrency }}</td>
-            <td>{{ transaction.category }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-    </div>
-  </v-container>
+    <v-data-table :headers="tableHeaders" :items="tableData" :hide-default-footer="true">
+      <template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
+        {{ item[header.value] }}
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <style scoped>
 .table-container {
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
-  overflow-x: auto;
-  position: sticky;
-  bottom: 0;
 }
+
 .table {
-  min-width: max-content;
+  width: 100%;
   border-collapse: collapse;
 }
+
 .table thead th {
   background-color: #f5f5f5;
 }
+
 .table tbody tr:nth-child(odd) {
   background-color: #f9f9f9;
 }
+
 .table th,
 .table td {
   padding: 8px;
   border: 1px solid #ddd;
 }
+
 .table td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.v-text-field {
-  width: 100%;
-}
 </style>
 
 <script>
+import axios from 'axios';
 import { mapActions, mapState } from 'vuex';
-import axios from 'axios'; 
 
 export default {
   name: 'Transactions',
   data() {
     return {
+      tableHeaders: [],
+      tableData: [],
+      // transactions: [],
+      // budgetSpentData: [],
+      // budgetBalanceData: [],
       selectedFile: null,
       errorMessage: '',
     };
@@ -108,8 +81,17 @@ export default {
               { Base64Data: base64String },
               { headers: { 'Content-Type': 'application/json' } }
             );
-            this.$store.commit('setTransactions', response.data)
-            this.transactions = response.data;
+            if(response.data && response.data.length > 0) {
+              const firstRow = response.data[0];
+              this.tableHeaders = Object.keys(firstRow).map(key => ({
+                text: key,
+                value: key,
+              }));
+              this.tableData = response.data;
+              this.$store.commit('setTransactionsLoaded', true);
+              this.spentBudget();
+              this.budgetBalance();
+            }
           } catch (error) {
             this.errorMessage = 'File upload failed. Please try again.';
             console.error(error);
@@ -119,13 +101,27 @@ export default {
         this.errorMessage = 'Please select a file to upload.';
       }
     },
-    ...mapActions(['fetchTransactions']),
+    spentBudget() {
+      if (this.$store.state.transactionsLoaded) {
+      this.$store.dispatch('fetchBudgetSpentData');
+      }
+    },
+    ...mapActions(['fetchBudgetSpentData']),
+    budgetBalance() {
+      if (this.$store.state.transactionsLoaded) {
+        this.$store.dispatch('fetchBudgetBalanceData');
+      }
+    },
+    ...mapActions(['fetchBudgetBalanceData']),
   },
   created() {
-    // this.fetchTransactions();
+    if (this.$store.state.transactionsLoaded) {
+      this.spentBudget();
+      this.budgetBalance();
+    }
   },
   computed: {
-    ...mapState(['transactions']),
+    ...mapState(['budgetSpentData', 'transactionsLoaded', 'budgetBalanceData']),
   },
 };
 </script>

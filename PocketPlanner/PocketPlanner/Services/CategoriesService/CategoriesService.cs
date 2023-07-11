@@ -5,7 +5,12 @@ namespace PocketPlanner.Services.CategoriesService
 {
     public class CategoriesService : ICategoriesService
     {
-        private static List<Category> categories = new List<Category>();
+        private static List<Category> categories = new List<Category>
+        {
+            new Category(),
+            new Category { Id = 1, Name = "Food", Pattern = "\b(maxima|lidl|rimi|silas|iki|kebabai|kubas|norfa|norvilo|street|elija|valgykla|todze|hesburger|express|keturi simtai|aces|baras|kavine|alkava|jack pub|wolt|cafe|voster|laurus|studio|sushi|BOTTLERY|Talutti|COFFEE|OBUOLIO|Miltuoti|MENY|EXTRA|chicken|peppes|esso as|fruktmarked|YX|europris|burger|esso|coop|market|maxi|prix|kiwi|pizza|coop|7ELEVEN|ALLE|pietus)\b"}
+        };
+
         private readonly IMapper _mapper;
         private readonly DataContext _context;
         public CategoriesService(IMapper mapper, DataContext context)
@@ -14,15 +19,16 @@ namespace PocketPlanner.Services.CategoriesService
             _context = context;
         }
 
-        public async Task<ServiceResponse<GetCategoryDto>> AddCategory(AddCategoryDto newCategory)
+        public async Task<ServiceResponse<List<GetCategoryDto>>> AddCategory(AddCategoryDto newCategory)
         {
-            var serviceResponse = new ServiceResponse<GetCategoryDto>();
+            var serviceResponse = new ServiceResponse<List<GetCategoryDto>>();
             var category = _mapper.Map<Category>(newCategory);
 
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            serviceResponse.Data = _mapper.Map<GetCategoryDto>(category);
+            var dbCategories = await _context.Categories.ToListAsync();
+            serviceResponse.Data = dbCategories.Select(category => _mapper.Map<GetCategoryDto>(category)).ToList();
 
             return serviceResponse;
         }

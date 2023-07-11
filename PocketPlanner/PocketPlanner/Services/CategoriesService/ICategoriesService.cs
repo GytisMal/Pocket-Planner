@@ -1,5 +1,5 @@
-﻿using PocketPlanner.Models;
-using PocketPlanner.Dtos.Categories;
+﻿using PocketPlanner.Dtos.Categories;
+using PocketPlanner.Models;
 
 namespace PocketPlanner.Services.CategoriesService
 {
@@ -7,7 +7,7 @@ namespace PocketPlanner.Services.CategoriesService
     {
         Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories();
         Task<ServiceResponse<GetCategoryDto>> GetCategoryById(int id);
-        Task<ServiceResponse<GetCategoryDto>> AddCategory(AddCategoryDto newCategory);
+        Task<ServiceResponse<List<GetCategoryDto>>> AddCategory(AddCategoryDto newCategory);
         Task<ServiceResponse<GetCategoryDto>> UpdateCategory(UpdateCategoryDto updatedCategory);
         Task<ServiceResponse<List<GetCategoryDto>>> DeleteCategory(int id);
     }
