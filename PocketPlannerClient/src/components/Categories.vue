@@ -110,8 +110,7 @@ export default {
       }
     },
     loadCategories() {
-      this.$axios.get("Categories")
-        .then(response => {
+      this.$axios.get("Categories").then(response => {
           if (response.data) {
             this.categories = response.data.data;
           }
@@ -121,26 +120,28 @@ export default {
         });
     },
     addCategory() {
-      if(!this.newCategory.name || !this.newCategory.pattern) {     
-        return
+  if (!this.newCategory.name || !this.newCategory.pattern) {
+    return;
+  }
+  this.$axios
+    .post("Categories", this.newCategory)
+    .then(response => {
+      if (response.data) {
+        this.categories.push(response.data.data);
+        this.newCategory = {
+          id: "",
+          name: "",
+          pattern: ""
+        };
+        this.loadCategories(); // Fetch the updated list of categories
       }
-      this.$axios.post("Categories", this.newCategory).then(response => {
-        if (response.data) {
-          this.categories.push(response.data.data);
-          this.newCategory = {
-            id: "",
-            name: "",
-            pattern: ""
-          };
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  },  
+    })
+    .catch(error => {
+      console.error(error);
+    });
+},  
     deleteCategory(id) {
-    this.$axios.delete(`Categories/${id}`)
-      .then(response => {
+    this.$axios.delete(`Categories/${id}`).then(response => {
         if (response.data) {
           this.categories = response.data;
         };

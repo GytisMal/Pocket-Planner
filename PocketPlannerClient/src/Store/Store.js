@@ -1,5 +1,4 @@
 import { createStore } from 'vuex';
-import axios from 'axios';
 
 export default createStore({
   state: {
@@ -24,8 +23,8 @@ export default createStore({
     },
   },
   actions: {
-    fetchBudgetSpentData({ commit }) { //state
-      axios.get('https://localhost:7042/api/Budget/spent').then(response => {
+    fetchBudgetSpentData({ commit }) {
+      this.$axios.get('Budget/spent').then(response => {
           if (response.data) {
             commit('setBudgetSpentData', response.data);
           }
@@ -35,7 +34,7 @@ export default createStore({
         });
       },
     fetchBudgetBalanceData({ commit }) {
-      axios.get('https://localhost:7042/api/Budget/balance').then(response => {
+      this.$axios.get('Budget/balance').then(response => {
         if(response.data) {
           commit('setBudgetBalanceData', response.data);
         }
@@ -43,6 +42,15 @@ export default createStore({
     },
     addTransaction({ commit }, transaction) {
       commit('setTransactions', [...state.transactions, transaction]);
+    },
+    calculateBudgetBalance({ commit, state }) {
+      let balanceData = {...state.budgetSpentData};
+      for (let type in balanceData) {
+        if(state.budgetSpentData[type]){
+          balanceData[type] = state.budgetSpentData[type] - balanceData[type];
+        }
+      }
+      commit('setBudgetBalanceData', balanceData);
     },
   },
 });

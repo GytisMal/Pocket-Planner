@@ -1,10 +1,22 @@
 <template>
   <v-container>
     <h2>Transactions</h2>
+    <v-alert
+      v-model="showSuccessAlert"
+      type="success"
+      dismissible
+    >
+      File uploaded successfully!
+    </v-alert>
+    <v-alert
+      v-model="showErrorAlert"
+      type="error"
+      dismissible
+    >
+      {{ errorMessage }}
+    </v-alert>
     <div>
       <input type="file" @change="handleFileUpload" />
-      <p v-if="errorMessage">{{ errorMessage }}</p>
-      <button @click="uploadFile">Upload</button>
     </div>
     <div class="table-container">
       <v-table class="table">
@@ -85,6 +97,8 @@ export default {
     return {
       selectedFile: null,
       errorMessage: '',
+      showSuccessAlert: false,
+      showErrorAlert: false,
     };
   },
   methods: {
@@ -93,37 +107,45 @@ export default {
     },
     handleFileUpload(event) {
       this.selectedFile = event.target.files[0];
-    },
-    uploadFile() {
       if (this.selectedFile) {
-        const reader = new FileReader();
-        reader.readAsBinaryString(this.selectedFile);
-
-        reader.onload = async () => {
-          const base64String = this.binaryToBase64(reader.result);
-          this.$axios.post('Transactions',
-            { Base64Data: base64String },
-            { headers: { 'Content-Type': 'application/json' } }
-          ).then((response) => {
-            if (response.data) {
-              this.$store.commit('setTransactions', response.data)
-              this.transactions = response.data;
-            }
-          })
-          .catch((error) => {
-            this.errorMessage = 'File upload failed. Please try again.';
-            console.error(error);
-          });
-        }
-      } else {
-        this.errorMessage = 'Please select a file to upload.';
+        this.uploadFile();
+      }
+      else {
+        this.errorMessage = "Please select a file to upload.";
+        this.showErrorAlert = true;
+        setTimeout(() => {
+          this.showErrorAlert = false
+        }, 4000 );
       }
     },
+    uploadFile() {
+      const reader = new FileReader();
+      reader.readAsBinaryString(this.selectedFile);
+
+        reader.onload = async () => {
+          try {
+            const base64String = this.binaryToBase64(reader.result);
+            const response = await this.$axios.post('Transactions',
+              { Base64Data: base64String },
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+            this.$store.commit('setTransactions', response.data)
+            this.showSuccessAlert = true;
+            setTimeout(() => {
+              this.showSuccessAlert = false;
+            }, 4000 );
+          } catch (error) {
+            this.errorMessage = 'File upload failed. Please try again.';
+            this.showErrorAlert = true;
+            console.error(error);
+            setTimeout(() => {
+              this.showErrorAlert = false;
+            }, 4000);
+          }
+        };
+      } 
+    },
     ...mapActions(['fetchTransactions']),
-  },
-  created() {
-    // this.fetchTransactions();
-  },
   computed: {
     ...mapState(['transactions']),
   },

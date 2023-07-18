@@ -19,17 +19,11 @@
         <tbody>
           <tr v-for="budget in budgets" :key="budget && budget.id">
             <td>{{ budget.id }}</td>
-            <td>
-              <input v-model="budget.type" />
-            </td>
-            <td>
-              <input v-model="budget.amount" />
-            </td>
+            <td>{{ budget.type }}</td>
+            <td>{{ budget.amount }}</td>
             <td>{{ getSpentAmount(budget.type) }}</td>
             <td>{{ getBalance(budget.type) }}</td>
-            <td>
-              <input v-model="budget.date" />
-            </td>
+            <td>{{ budget.date }}</td>
             <td>
               <v-icon @click="openUpdateDialog(budget)">mdi-pencil</v-icon>
               <v-icon @click="deleteBudget(budget.id)">mdi-delete</v-icon>
@@ -39,6 +33,7 @@
       </v-table>
     </div>
   </v-container>
+  <canvas id="budgetChart"></canvas>
 </template>
 
 <style>
@@ -77,6 +72,10 @@ import { mapState } from 'vuex';
 import { mapActions } from 'vuex';
 import AddBudgetDialog from './AddBudgetDialog.vue';
 import UpdateBudgetDialog from './UpdateBudgetDialog.vue';
+import { Chart, BarController, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import 'chartjs-plugin-datalabels'; 
+
+Chart.register(BarController, BarElement, CategoryScale, LinearScale); 
   
 export default {
     name: 'Budgets',
@@ -87,8 +86,6 @@ export default {
     data() {
       return {
         budgets: [],
-        budgetSpentData: {},
-        budgetBalanceData: {},
       };
     },
     methods: {
@@ -96,6 +93,7 @@ export default {
         this.$axios.get('Budget').then((response) => {
             if (response.data) {
                 this.budgets = response.data.data;
+                this.createChart(); 
             }
           })
           .catch((error) => {
@@ -104,11 +102,13 @@ export default {
       },
       addNewBudget(newBudget) {
         this.budgets.push(newBudget);
+        this.createChart();
       },
       deleteBudget(id) {
           this.$axios.delete(`Budget/${id}`).then(response => {
             if (response.data) {
               this.budgets = response.data.data;
+              this.createChart();
             }
         })
         .catch(error => {
@@ -140,15 +140,94 @@ export default {
         this.budgets[index] = updatedBudget;
       }
     },
+    createChart() {
+      const labels = this.budgets.map(budget => budget.type);
+      const plannedData = this.budgets.map(budget => budget.amount);
+      const spentData = labels.map(label => this.getSpentAmount(label));
+      const balanceData = labels.map(label => this.getBalance(label));
+
+      if (this.budgetChart) {
+        this.budgetChart.destroy();
+      }
+
+      this.budgetChart = new Chart(document.getElementById('budgetChart'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Planned',
+            data: plannedData,
+            backgroundColor: 'rgba(0, 123, 255, 0.2)', 
+            borderColor: 'rgba(0, 123, 255, 1)', 
+            borderWidth: 1
+          }, {
+            label: 'Spent',
+            data: spentData,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+            borderColor: 'rgba(75, 192, 192, 1)', 
+            borderWidth: 1
+          },{
+            label: 'Balance',
+            data: balanceData,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', 
+            borderColor: 'rgba(255, 99, 132, 1)', 
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Budget Overview',
+            },
+            legend: {
+              display: true,
+              position: 'bottom',
+            },
+            tooltip: {
+              callbacks: {
+                title: function(tooltipItem) {
+                  return tooltipItem[0].label;
+                },
+                label: function(tooltipItem) {
+                  return tooltipItem.raw;
+                }
+              }
+            },
+            datalabels: {
+              color: '#000000',
+              anchor: 'end',
+              align: 'top',
+              formatter: function(value, context) {
+                return value;
+              },
+              display: function(context) {
+                return context.dataset.data[context.dataIndex] > 0; // Display labels only for positive values
+              },
+              font: {
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      });
+    }
   },
   computed: {
-    ...mapState(['budgetSpentData', 'transactionsLoaded', 'budgetBalanceData'])
+    ...mapState(['transactionsLoaded', 'budgetSpentData', 'budgetBalanceData'])
   },
-  created() {
+  mounted() {
     this.userBudget();
     if (this.transactionsLoaded) {
       this.fetchBudgetSpentData();
       this.fetchBudgetBalanceData();
+      this.createChart();
     }
   }
 };
